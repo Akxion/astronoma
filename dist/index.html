@@ -45,7 +45,7 @@
 </head>
 <body class="bg-gray-100 flex flex-col h-screen">
     <header class="bg-indigo-600 text-white p-4 text-center relative">
-        <h1 class="text-xl font-bold">Astrology & Numerology</h1>
+        <h1 class="text-xl font-bold">Astronoma</h1>
         <button onclick="toggleInfoScreen()" class="absolute right-4 top-4 text-white">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -67,7 +67,7 @@
     <div class="content-container flex-grow">
         <div id="mainContent" class="p-4 mt-4">
             <div id="astrologyContent" class="bg-white p-6 rounded-lg shadow-md">
-                <h2 class="text-xl font-semibold mb-4 text-indigo-600">Chinese Astrology</h2>
+                <h2 class="text-xl font-semibold mb-4 text-indigo-600">Astrology</h2>
                 <div class="mb-4">
                     <label for="birthYear" class="block text-sm font-medium text-gray-700 mb-1">Birth Year:</label>
                     <input type="number" id="birthYear" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
@@ -140,7 +140,8 @@
     </div>
 
     <script>
-         // Import AdMob and Capacitor Plugins
+
+             // Import AdMob and Capacitor Plugins
     import { AdMob } from '@capacitor-community/admob';
     import { Capacitor } from '@capacitor/core';
 
@@ -193,8 +194,6 @@
     } else {
       console.log('AdMob is only enabled for Android platform');
     }
-
-
 
         const zodiacSigns = [
             "Rat", "Ox", "Tiger", "Rabbit", "Dragon", "Snake",
@@ -299,6 +298,7 @@
             const birthYear = parseInt(document.getElementById('birthYear').value);
             const readingYear = parseInt(document.getElementById('readingYear').value) || new Date().getFullYear();
             const resultDiv = document.getElementById('astrologyResult');
+            showAd();
 
             if (birthYear) {
                 const zodiacSign = getZodiacSign(birthYear);
@@ -343,8 +343,6 @@
             } else {
                 resultDiv.innerHTML = '<p class="text-red-500">Please enter your birth year.</p>';
             }
-
-            showAd();
         }
 
         function getRandomPrediction(category) {
@@ -420,6 +418,8 @@
             const numerologyYear = parseInt(document.getElementById('numerologyYear').value) || new Date().getFullYear();
             const resultDiv = document.getElementById('numerologyResult');
 
+            showAd();
+
             if (fullName && birthDate) {
                 const lifePathNumber = calculateLifePathNumber(birthDate);
                 const destinyNumber = calculateDestinyNumber(fullName);
@@ -466,8 +466,6 @@
             } else {
                 resultDiv.innerHTML = '<p class="text-red-500">Please enter both your full name and birth date.</p>';
             }
-
-            showAd();
         }
 
         // Set default values for reading year inputs
