@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Astrology & Numerology App</title>
+    <script type = "module" src="./main.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+        body {
+            font-family: 'Roboto', sans-serif;
+            overflow: hidden;
+            position: fixed;
+            width: 100%;
+            height: 100%;
+        }
+        .content-container {
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            height: calc(100% - 116px); /* Adjust for header and footer */
+        }
+        .slide-in {
+            animation: slideIn 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+        .slide-out {
+            animation: slideOut 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(-100%); opacity: 0; }
+        }
+        .fade-in {
+            animation: fadeIn 0.3s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex flex-col h-screen">
+    <header class="bg-indigo-600 text-white p-4 text-center relative">
+        <h1 class="text-xl font-bold">Astronoma</h1>
+        <button onclick="toggleInfoScreen()" class="absolute right-4 top-4 text-white">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+        </button>
+    </header>
+
+    <div class="flex justify-center mt-4">
+        <div class="inline-flex rounded-md shadow-sm" role="group">
+            <button type="button" onclick="showTab('astrology')" id="astrologyTab" class="px-4 py-2 text-sm font-medium text-indigo-600 bg-white border border-indigo-600 rounded-l-lg hover:bg-indigo-50 focus:z-10 focus:ring-2 focus:ring-indigo-500 focus:bg-indigo-50">
+                Astrology
+            </button>
+            <button type="button" onclick="showTab('numerology')" id="numerologyTab" class="px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-r-lg hover:bg-gray-100 focus:z-10 focus:ring-2 focus:ring-indigo-500 focus:bg-indigo-50">
+                Numerology
+            </button>
+        </div>
+    </div>
+
+    <div class="content-container flex-grow">
+        <div id="mainContent" class="p-4 mt-4">
+            <div id="astrologyContent" class="bg-white p-6 rounded-lg shadow-md">
+                <h2 class="text-xl font-semibold mb-4 text-indigo-600">Astrology</h2>
+                <div class="mb-4">
+                    <label for="birthYear" class="block text-sm font-medium text-gray-700 mb-1">Birth Year:</label>
+                    <input type="number" id="birthYear" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div class="mb-4">
+                    <label for="readingYear" class="block text-sm font-medium text-gray-700 mb-1">Reading Year:</label>
+                    <input type="number" id="readingYear" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <button onclick="getAstrologyReading()" class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition duration-300">Get Astrology Reading</button>
+                <div id="astrologyResult" class="mt-6 text-gray-700"></div>
+            </div>
+            <div id="numerologyContent" class="bg-white p-6 rounded-lg shadow-md hidden">
+                <h2 class="text-xl font-semibold mb-4 text-indigo-600">Numerology</h2>
+                <div class="mb-4">
+                    <label for="fullName" class="block text-sm font-medium text-gray-700 mb-1">Full Name:</label>
+                    <input type="text" id="fullName" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div class="mb-4">
+                    <label for="birthDate" class="block text-sm font-medium text-gray-700 mb-1">Birth Date:</label>
+                    <input type="date" id="birthDate" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div class="mb-4">
+                    <label for="numerologyYear" class="block text-sm font-medium text-gray-700 mb-1">Reading Year:</label>
+                    <input type="number" id="numerologyYear" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <button onclick="getNumerologyReading()" class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition duration-300">Get Numerology Reading</button>
+                <div id="numerologyResult" class="mt-6 text-gray-700"></div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-white border-t border-gray-200 p-4">
+        <div class="flex justify-around">
+            <button onclick="showTab('astrology')" class="text-indigo-600 focus:outline-none">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                </svg>
+                <span class="text-xs">Astrology</span>
+            </button>
+            <button onclick="showTab('numerology')" class="text-gray-600 focus:outline-none">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                </svg>
+                <span class="text-xs">Numerology</span>
+            </button>
+        </div>
+    </footer>
+
+    <div id="infoScreen" class="fixed inset-0 bg-white z-50 p-6 overflow-y-auto hidden">
+        <button onclick="toggleInfoScreen()" class="absolute right-4 top-4 text-gray-600">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+        <h2 class="text-2xl font-bold mb-4">About the App</h2>
+        <p class="mb-4">
+            This Astrology & Numerology app was created to provide users with insights into their Chinese zodiac sign and numerological profile. It offers personalized readings based on birth year, name, and date of birth.
+        </p>
+        <h3 class="text-xl font-semibold mb-2">Features:</h3>
+        <ul class="list-disc list-inside mb-4">
+            <li>Chinese Astrology readings</li>
+            <li>Numerology calculations</li>
+            <li>Personalized interpretations</li>
+            <li>Future outlooks</li>
+        </ul>
+        <h3 class="text-xl font-semibold mb-2">About the Developer</h3>
+        <p>
+            This app was created by Arthurium, a passionate developer with a keen interest in astrology and numerology. Arthurium aims to bring the ancient wisdom of these practices into the digital age, making them accessible to everyone.
+        </p>
+    </div>
+
+    <script>
+        const zodiacSigns = [
+            "Rat", "Ox", "Tiger", "Rabbit", "Dragon", "Snake",
+            "Horse", "Goat", "Monkey", "Rooster", "Dog", "Pig"
+        ];
+
+        const zodiacTraits = {
+            "Rat": "Quick-witted, resourceful, and versatile. You are optimistic and energetic, and can adapt quickly to new environments.",
+            "Ox": "Diligent, dependable, and determined. You are honest, patient, and inspire confidence in others.",
+            "Tiger": "Brave, confident, and charismatic. You are enthusiastic and generous, with a sense of justice and a commitment to help others.",
+            "Rabbit": "Gentle, elegant, and compassionate. You are kind, refined, and have a good sense of humor, making you popular among friends.",
+            "Dragon": "Powerful, energetic, and lucky. You are intelligent, ambitious, and have a strong drive to succeed in life.",
+            "Snake": "Enigmatic, intelligent, and wise. You are intuitive, determined, and have a good ability to communicate and lead.",
+            "Horse": "Energetic, independent, and adventurous. You are warm-hearted, enthusiastic, and capable of multi-tasking.",
+            "Goat": "Mild-mannered, creative, and empathetic. You are artistic, kind-hearted, and have a strong sense of justice.",
+            "Monkey": "Clever, charming, and mischievous. You are witty, intelligent, and have a magnetic personality that draws others to you.",
+            "Rooster": "Observant, hardworking, and courageous. You are honest, bright, and confident, with a keen eye for details.",
+            "Dog": "Loyal, honest, and amiable. You are friendly, faithful, and always ready to help others in need.",
+            "Pig": "Generous, diligent, and optimistic. You are compassionate, easy-going, and enjoy life to the fullest."
+        };
+
+        const numerologyTraits = {
+            1: "Independent, creative, original, ambitious, determined, strong-willed",
+            2: "Cooperative, adaptable, considerate, sensitive, diplomatic, patient",
+            3: "Expressive, optimistic, creative, communicative, imaginative, enthusiastic",
+            4: "Practical, reliable, stable, organized, loyal, hard-working",
+            5: "Adventurous, energetic, versatile, adaptable, freedom-loving, progressive",
+            6: "Responsible, caring, loving, protective, nurturing, supportive",
+            7: "Analytical, introspective, intuitive, reserved, studious, wise",
+            8: "Ambitious, goal-oriented, successful, authoritative, materialistic, powerful",
+            9: "Compassionate, generous, selfless, humanitarian, spiritual, creative"
+        };
+
+        function showTab(tab) {
+            const astrologyContent = document.getElementById('astrologyContent');
+            const numerologyContent = document.getElementById('numerologyContent');
+            const astrologyTab = document.getElementById('astrologyTab');
+            const numerologyTab = document.getElementById('numerologyTab');
+
+            if (tab === 'astrology') {
+                astrologyContent.classList.remove('hidden');
+                numerologyContent.classList.add('hidden');
+                astrologyTab.classList.add('text-indigo-600', 'border-indigo-600');
+                astrologyTab.classList.remove('text-gray-900', 'border-gray-200');
+                numerologyTab.classList.remove('text-indigo-600', 'border-indigo-600');
+                numerologyTab.classList.add('text-gray-900', 'border-gray-200');
+            } else {
+                astrologyContent.classList.add('hidden');
+                numerologyContent.classList.remove('hidden');
+                numerologyTab.classList.add('text-indigo-600', 'border-indigo-600');
+                numerologyTab.classList.remove('text-gray-900', 'border-gray-200');
+                astrologyTab.classList.remove('text-indigo-600', 'border-indigo-600');
+                astrologyTab.classList.add('text-gray-900', 'border-gray-200');
+            }
+
+            simulateMobileAnimation();
+            updateFooterIcons(tab);
+        }
+
+        function simulateMobileAnimation() {
+            const mainContent = document.getElementById('mainContent');
+            mainContent.classList.add('slide-out');
+            setTimeout(() => {
+                mainContent.classList.remove('slide-out');
+                mainContent.classList.add('slide-in');
+                setTimeout(() => {
+                    mainContent.classList.remove('slide-in');
+                }, 500);
+            }, 10);
+        }
+
+        function updateFooterIcons(activeTab) {
+            const astrologyIcon = document.querySelector('footer button:first-child');
+            const numerologyIcon = document.querySelector('footer button:last-child');
+
+            if (activeTab === 'astrology') {
+                astrologyIcon.classList.remove('text-gray-600');
+                astrologyIcon.classList.add('text-indigo-600');
+                numerologyIcon.classList.remove('text-indigo-600');
+                numerologyIcon.classList.add('text-gray-600');
+            } else {
+                numerologyIcon.classList.remove('text-gray-600');
+                numerologyIcon.classList.add('text-indigo-600');
+                astrologyIcon.classList.remove('text-indigo-600');
+                astrologyIcon.classList.add('text-gray-600');
+            }
+        }
+
+        function toggleInfoScreen() {
+            const infoScreen = document.getElementById('infoScreen');
+            infoScreen.classList.toggle('hidden');
+            if (!infoScreen.classList.contains('hidden')) {
+                infoScreen.classList.add('fade-in');
+            }
+        }
+
+        function getZodiacSign(year) {
+            return zodiacSigns[(year - 4) % 12];
+        }
+
+        function getAstrologyReading() {
+            const birthYear = parseInt(document.getElementById('birthYear').value);
+            const readingYear = parseInt(document.getElementById('readingYear').value) || new Date().getFullYear();
+            const resultDiv = document.getElementById('astrologyResult');
+
+            if (birthYear) {
+                const zodiacSign = getZodiacSign(birthYear);
+                const readingZodiacSign = getZodiacSign(readingYear);
+                const age = readingYear - birthYear;
+
+                const financePrediction = getRandomPrediction('finance');
+                const healthPrediction = getRandomPrediction('health');
+                const relationshipsPrediction = getRandomPrediction('relationships');
+
+                const futureYears = [readingYear + 1, readingYear + 2, readingYear + 3];
+                let futureReadings = '';
+                futureYears.forEach(year => {
+                    const futureZodiacSign = getZodiacSign(year);
+                    futureReadings += `
+                        <p class="mt-2"><span class="font-bold">${year}:</span> Year of the ${futureZodiacSign}.</p>
+                        <ul class="list-disc list-inside ml-4">
+                            <li>Finance: ${getRandomPrediction('finance')}</li>
+                            <li>Health: ${getRandomPrediction('health')}</li>
+                            <li>Relationships: ${getRandomPrediction('relationships')}</li>
+                        </ul>
+                    `;
+                });
+
+                resultDiv.innerHTML = `
+                    <p class="font-semibold mb-2">Reading for ${readingYear} (Age: ${age}):</p>
+                    <p>Your Chinese Zodiac sign is the <span class="font-bold text-indigo-600">${zodiacSign}</span>.</p>
+                    <p class="mt-2">${zodiacTraits[zodiacSign]}</p>
+                    <p class="mt-4">The year ${readingYear} is the year of the <span class="font-bold text-indigo-600">${readingZodiacSign}</span>.</p>
+                    <p class="mt-2">This year may bring ${readingZodiacSign === zodiacSign ? 'familiar challenges and opportunities' : 'new experiences and growth'}. Focus on your ${zodiacSign} traits to navigate the energy of the ${readingZodiacSign} year.</p>
+                    
+                    <p class="font-semibold mt-4">Detailed Predictions for ${readingYear}:</p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li>Finance: ${financePrediction}</li>
+                        <li>Health: ${healthPrediction}</li>
+                        <li>Relationships: ${relationshipsPrediction}</li>
+                    </ul>
+
+                    <p class="font-semibold mt-4">Future Outlook:</p>
+                    ${futureReadings}
+                `;
+            } else {
+                resultDiv.innerHTML = '<p class="text-red-500">Please enter your birth year.</p>';
+            }
+        }
+
+        function getRandomPrediction(category) {
+            const predictions = {
+                finance: [
+                    "Expect unexpected financial opportunities.",
+                    "Focus on saving and budgeting for long-term goals.",
+                    "A risky investment may pay off, but proceed with caution.",
+                    "Your career may bring increased income this year.",
+                    "Be prepared for some financial challenges, but stay optimistic."
+                ],
+                health: [
+                    "Pay extra attention to your diet and exercise routine.",
+                    "A new wellness practice could greatly benefit your overall health.",
+                    "Listen to your body and don't ignore any persistent symptoms.",
+                    "This is a good year to focus on mental health and stress reduction.",
+                    "Regular check-ups and preventive care will be especially important."
+                ],
+                relationships: [
+                    "A new romantic interest may enter your life.",
+                    "Focus on strengthening existing relationships through open communication.",
+                    "You may need to set better boundaries in some relationships.",
+                    "A long-standing friendship could evolve into something more.",
+                    "Family relationships will require extra attention and care this year."
+                ]
+            };
+
+            return predictions[category][Math.floor(Math.random() * predictions[category].length)];
+        }
+
+        function calculateLifePathNumber(date) {
+            const dateString = date.replace(/-/g, '');
+            let sum = 0;
+            for (let i = 0; i < dateString.length; i++) {
+                sum += parseInt(dateString[i]);
+            }
+            while (sum > 9) {
+                sum = Math.floor(sum / 10) + (sum % 10);
+            }
+            return sum;
+        }
+
+        function calculateDestinyNumber(name) {
+            const letterValues = {
+                'a': 1, 'b': 2, 'c': 3, 'd': 4, 'e': 5, 'f': 6, 'g': 7, 'h': 8, 'i': 9,
+                'j': 1, 'k': 2, 'l': 3, 'm': 4, 'n': 5, 'o': 6, 'p': 7, 'q': 8, 'r': 9,
+                's': 1, 't': 2, 'u': 3, 'v': 4, 'w': 5, 'x': 6, 'y': 7, 'z': 8
+            };
+            let sum = 0;
+            name = name.toLowerCase().replace(/[^a-z]/g, '');
+            for (let i = 0; i < name.length; i++) {
+                sum += letterValues[name[i]];
+            }
+            while (sum > 9) {
+                sum = Math.floor(sum / 10) + (sum % 10);
+            }
+            return sum;
+        }
+
+        function calculatePersonalYear(birthDate, year) {
+            const birthMonth = parseInt(birthDate.split('-')[1]);
+            const birthDay = parseInt(birthDate.split('-')[2]);
+            let sum = birthMonth + birthDay + year;
+            while (sum > 9) {
+                sum = Math.floor(sum / 10) + (sum % 10);
+            }
+            return sum;
+        }
+
+        function getNumerologyReading() {
+            const fullName = document.getElementById('fullName').value;
+            const birthDate = document.getElementById('birthDate').value;
+            const numerologyYear = parseInt(document.getElementById('numerologyYear').value) || new Date().getFullYear();
+            const resultDiv = document.getElementById('numerologyResult');
+
+            if (fullName && birthDate) {
+                const lifePathNumber = calculateLifePathNumber(birthDate);
+                const destinyNumber = calculateDestinyNumber(fullName);
+                const personalYear = calculatePersonalYear(birthDate, numerologyYear);
+
+                const financePrediction = getRandomPrediction('finance');
+                const healthPrediction = getRandomPrediction('health');
+                const relationshipsPrediction = getRandomPrediction('relationships');
+
+                const futureYears = [numerologyYear + 1, numerologyYear + 2, numerologyYear + 3];
+                let futureReadings = '';
+                futureYears.forEach(year => {
+                    const futurePersonalYear = calculatePersonalYear(birthDate, year);
+                    futureReadings += `
+                        <p class="mt-2"><span class="font-bold">${year}:</span> Personal Year ${futurePersonalYear}.</p>
+                        <p>Focus on: ${numerologyTraits[futurePersonalYear]}</p>
+                        <ul class="list-disc list-inside ml-4">
+                            <li>Finance: ${getRandomPrediction('finance')}</li>
+                            <li>Health: ${getRandomPrediction('health')}</li>
+                            <li>Relationships: ${getRandomPrediction('relationships')}</li>
+                        </ul>
+                    `;
+                });
+
+                resultDiv.innerHTML = `
+                    <p class="font-semibold mb-2">Numerology Reading for ${numerologyYear}:</p>
+                    <p><span class="font-bold">Life Path Number:</span> ${lifePathNumber}</p>
+                    <p class="mt-2">${numerologyTraits[lifePathNumber]}</p>
+                    <p class="mt-4"><span class="font-bold">Destiny Number:</span> ${destinyNumber}</p>
+                    <p class="mt-2">${numerologyTraits[destinyNumber]}</p>
+                    <p class="mt-4"><span class="font-bold">Personal Year Number:</span> ${personalYear}</p>
+                    <p class="mt-2">This year emphasizes: ${numerologyTraits[personalYear]}</p>
+
+                    <p class="font-semibold mt-4">Detailed Predictions for ${numerologyYear}:</p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li>Finance: ${financePrediction}</li>
+                        <li>Health: ${healthPrediction}</li>
+                        <li>Relationships: ${relationshipsPrediction}</li>
+                    </ul>
+
+                    <p class="font-semibold mt-4">Future Outlook:</p>
+                    ${futureReadings}
+                `;
+            } else {
+                resultDiv.innerHTML = '<p class="text-red-500">Please enter both your full name and birth date.</p>';
+            }
+        }
+
+        // Set default values for reading year inputs
+        document.addEventListener('DOMContentLoaded', () => {
+            const currentYear = new Date().getFullYear();
+            document.getElementById('readingYear').value = currentYear;
+            document.getElementById('numerologyYear').value = currentYear;
+        });
+    </script>
+</body>
+</html>
